@@ -15,43 +15,27 @@ namespace NorthwindService
     public class ShipperService : IShipperService
     {
         private string _connectionString = ConfigurationManager.ConnectionStrings["theDB"].ToString();
-
-
-
-        public void DoWork()
+        public Shipper GetShipperByID(int shipperId)
         {
-
-        }
-
-        public Shipper GetShipperByID(int Id)
-        {
-
-
-            string queryString = "SELECT[ShipperID] ,[CompanyName] ,[Phone] FROM[NORTHWND].[dbo].[Shippers]" +
-                                 "WHERE[ShipperID] =" + Id;
+            string query = "SELECT[ShipperID] ,[CompanyName] ,[Phone] FROM[NORTHWND].[dbo].[Shippers]" +
+                                 "WHERE[ShipperID] =" + shipperId; //Vill bara hämta med rätt id
             var shipper = new Shipper();
             using (SqlConnection connection = new SqlConnection(_connectionString))
-            using (SqlCommand command = connection.CreateCommand())
             {
-                command.CommandText = queryString;
-
+                SqlCommand command = new SqlCommand(query, connection);
                 connection.Open();
 
-                using (SqlDataReader reader = command.ExecuteReader())
+                SqlDataReader reader = command.ExecuteReader();
+
+                while (reader.Read())
                 {
-                    while (reader.Read())
-                    {
-                        shipper.ShipperID = Convert.ToInt32(reader["ShipperID"].ToString());
-                        shipper.CompanyName = reader["CompanyName"].ToString();
-                        shipper.Phone = (reader["Phone"].ToString());
-                    }
-                }
-
-                return shipper;
+                    shipper.ShipperID = Convert.ToInt32(reader["ShipperID"].ToString());
+                    shipper.CompanyName = reader["CompanyName"].ToString();
+                    shipper.Phone = (reader["Phone"].ToString());
+                }    
             }
+            return shipper;
         }
-
-
 
         public Shipper SetAShipper(int shipperID, string companyName, int phone)
         {
