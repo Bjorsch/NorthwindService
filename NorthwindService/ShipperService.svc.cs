@@ -43,8 +43,7 @@ namespace NorthwindService
             string query = "UPDATE [NORTHWND].[dbo].[Shippers] SET " +
                            " companyName = @CompanyName," +
                            " phone = @Phone" + 
-                           " WHERE shipperID = @ShipperID";
-            var shipper = new Shipper();
+                           " WHERE shipperID = @ShipperID";            
             using (SqlConnection connection = new SqlConnection(_connectionString))
             {
                 SqlCommand command = new SqlCommand(query, connection);
@@ -60,8 +59,7 @@ namespace NorthwindService
 
                 connection.Open();
                 return command.ExecuteNonQuery();
-            }
-             ;
+            }             
         }
     }
 }
