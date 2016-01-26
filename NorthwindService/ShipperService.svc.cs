@@ -15,6 +15,7 @@ namespace NorthwindService
     public class ShipperService : IShipperService
     {
         private string _connectionString = ConfigurationManager.ConnectionStrings["theDB"].ToString();
+        
         public Shipper GetShipperByID(int shipperId)
         {
             string query = "SELECT[ShipperID] ,[CompanyName] ,[Phone] FROM[NORTHWND].[dbo].[Shippers]" +
@@ -31,15 +32,36 @@ namespace NorthwindService
                 {
                     shipper.ShipperID = Convert.ToInt32(reader["ShipperID"].ToString());
                     shipper.CompanyName = reader["CompanyName"].ToString();
-                    shipper.Phone = (reader["Phone"].ToString());
-                }    
+                    shipper.Phone = reader["Phone"].ToString();
+                }
             }
             return shipper;
         }
 
-        public Shipper SetAShipper(int shipperID, string companyName, int phone)
+        public int UpdateShipper(int shipperID, string companyName, string phone)
         {
-            throw new NotImplementedException();
+            string query = "UPDATE [NORTHWND].[dbo].[Shippers] SET " +
+                           " companyName = @CompanyName," +
+                           " phone = @Phone" + 
+                           " WHERE shipperID = @ShipperID";
+            var shipper = new Shipper();
+            using (SqlConnection connection = new SqlConnection(_connectionString))
+            {
+                SqlCommand command = new SqlCommand(query, connection);
+
+                SqlParameter paramShipperID = new SqlParameter("@ShipperID", shipperID);
+                command.Parameters.Add(paramShipperID);
+
+                SqlParameter paramCompanyName = new SqlParameter("@CompanyName", companyName);
+                command.Parameters.Add(paramCompanyName);
+
+                SqlParameter paramPhone = new SqlParameter("@Phone", phone);
+                command.Parameters.Add(paramPhone);
+
+                connection.Open();
+                return command.ExecuteNonQuery();
+            }
+             ;
         }
     }
 }

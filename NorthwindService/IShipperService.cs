@@ -15,7 +15,7 @@ namespace NorthwindService
         Shipper GetShipperByID(int Id);
 
         [OperationContract]
-        Shipper SetAShipper(int shipperID, string companyName, int phone);
+        int UpdateShipper(int shipperID, string companyName, string phone);
     }
 
     [DataContract]
